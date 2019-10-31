@@ -107,18 +107,12 @@ Please ensure that all CSV columns referenced from the row type can be resolved 
                         {
                             var customBinderType = member.GetAttribute<CsvColumnAttribute>().Binder;
 
-                            if (customBinderType != null)
-                            {
-                                return new { Member = member, Binder = GetCustomBinderInstance(customBinderType) };
-                            }
+                            var binder = customBinderType != null
+                                ? GetCustomBinderInstance(customBinderType)
+                                : Predefined.GetBinderOrNull(member.Type) 
+                                  ?? throw new ArgumentException($"Sorry, don't know how to bind property {member.Name} of type {member.Type}");
 
-                            if (_predefinedBinders.TryGetValue(member.Type, out var predefinedBinder))
-                            {
-                                return new { Member = member, Binder = GetValueGetter(predefinedBinder, member) };
-                            }
-
-                            throw new ArgumentException(
-                                $"Sorry, don't know how to bind property {member.Name} of type {member.Type}");
+                            return new { Member = member, Binder = GetValueGetter(binder, member) };
                         })
                         .ToArray();
                 })
@@ -166,13 +160,13 @@ to instance of {typeof(TRow)}", exception);
             };
         }
 
-        static Func<string, CultureInfo, object> GetValueGetter(Func<string, CultureInfo, object> predefinedBinder, Member member)
+        static Func<string, CultureInfo, object> GetValueGetter(IBinder binder, Member member)
         {
             return (value, culture) =>
             {
                 try
                 {
-                    return predefinedBinder(value, culture);
+                    return binder.GetValue(culture, value);
                 }
                 catch (FormatException exception)
                 {
@@ -183,25 +177,26 @@ to instance of {typeof(TRow)}", exception);
             };
         }
 
-        static Func<string, CultureInfo, object> GetCustomBinderInstance(Type customBinderType)
+        static IBinder GetCustomBinderInstance(Type customBinderType)
         {
             try
             {
                 var binder = (IBinder)TypeAccessor.Create(customBinderType).CreateNew();
 
-                return (value, culture) =>
-                {
-                    try
-                    {
-                        return binder.GetValue(culture, value);
-                    }
-                    catch (Exception exception)
-                    {
-                        throw new FormatException(
-                            $"Could not bind value '{value}' using instance of custom binder {binder.GetType()}",
-                            exception);
-                    }
-                };
+                return binder;
+                //return (value, culture) =>
+                //{
+                //    try
+                //    {
+                //        return binder.GetValue(culture, value);
+                //    }
+                //    catch (Exception exception)
+                //    {
+                //        throw new FormatException(
+                //            $"Could not bind value '{value}' using instance of custom binder {binder.GetType()}",
+                //            exception);
+                //    }
+                //};
             }
             catch (Exception exception)
             {
@@ -210,23 +205,6 @@ to instance of {typeof(TRow)}", exception);
                     exception);
             }
         }
-
-        readonly Dictionary<Type, Func<string, CultureInfo, object>> _predefinedBinders = new Dictionary<Type, Func<string, CultureInfo, object>>
-        {
-            [typeof(string)] = (value, culture) => value,
-
-            [typeof(float)] = (value, culture) => float.Parse(value, culture),
-            [typeof(double)] = (value, culture) => double.Parse(value, culture),
-            [typeof(decimal)] = (value, culture) => decimal.Parse(value, culture),
-
-            [typeof(byte)] = (value, culture) => byte.Parse(value, culture),
-            [typeof(short)] = (value, culture) => short.Parse(value, culture),
-            [typeof(int)] = (value, culture) => int.Parse(value, culture),
-            [typeof(long)] = (value, culture) => long.Parse(value, culture),
-
-            [typeof(DateTime)] = (value, culture) => DateTime.Parse(value, culture),
-            [typeof(DateTimeOffset)] = (value, culture) => DateTimeOffset.Parse(value, culture),
-        };
 
         static bool IsColumnMatch(string headerFromCsv, string nameFromAttribute) => nameFromAttribute == headerFromCsv;
     }
