@@ -1,4 +1,4 @@
-# CsvParser
+# Semicolon
 
 It's a CSV parser. 🙂
 

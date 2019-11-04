@@ -3,7 +3,7 @@ using FastMember;
 
 // ReSharper disable ArgumentsStyleLiteral
 
-namespace CsvParser.Extensions
+namespace Semicolon.Extensions
 {
     static class MemberExtensions
     {

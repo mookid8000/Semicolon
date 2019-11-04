@@ -3,33 +3,48 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using CsvParser.Attributes;
-using CsvParser.Binding;
-using CsvParser.Exceptions;
-using CsvParser.Extensions;
 using FastMember;
-
+using Semicolon.Attributes;
+using Semicolon.Binding;
+using Semicolon.Exceptions;
+using Semicolon.Extensions;
 // ReSharper disable ArgumentsStyleLiteral
 
-namespace CsvParser
+namespace Semicolon
 {
+    /// <summary>
+    /// This is the main parser class. New this one up, passing as <typeparamref name="TRow"/>  the type you want to represent each row of data to extract.
+    /// Please note that the type does not have to bind to ALL columns of the CSV data, but all columns (configured with <see cref="CsvColumnAttribute"/>
+    /// on properties with public setters) MUST be resolveable from the column name configured.
+    /// </summary>
     public class Parser<TRow>
     {
         readonly TypeAccessor _accessor = TypeAccessor.Create(typeof(TRow));
         readonly string _columnSeparator = ";";
         readonly CultureInfo _defaultCulture;
 
+        /// <summary>
+        /// Creates the CSV parser with <see cref="CultureInfo.InvariantCulture"/> as the default culture.
+        /// </summary>
         public Parser() : this(CultureInfo.InvariantCulture)
         {
         }
 
-        public Parser(CultureInfo defaultCulture)
+        /// <summary>
+        /// Creates the CSV parser, using <paramref name="culture"/> as the culture, which gets passed to the binders when parsing values.
+        /// </summary>
+        public Parser(CultureInfo culture)
         {
-            _defaultCulture = defaultCulture ?? throw new ArgumentNullException(nameof(defaultCulture));
+            _defaultCulture = culture ?? throw new ArgumentNullException(nameof(culture));
         }
 
+        /// <summary>
+        /// Parses the given CSV string
+        /// </summary>
         public IEnumerable<TRow> ParseCsv(string csv)
         {
+            if (csv == null) throw new ArgumentNullException(nameof(csv));
+
             using (var reader = new StringReader(csv))
             {
                 foreach (var row in ParseCsv(reader))
@@ -39,15 +54,20 @@ namespace CsvParser
             }
         }
 
-        public IEnumerable<TRow> ParseCsv(TextReader reader)
+        /// <summary>
+        /// Parses CSV from the given <paramref name="textReader"/>
+        /// </summary>
+        public IEnumerable<TRow> ParseCsv(TextReader textReader)
         {
-            var firstLine = reader.ReadLine() ?? throw new FormatException($"Expected the first line to contain a '{_columnSeparator}'-separated list of column headers");
+            if (textReader == null) throw new ArgumentNullException(nameof(textReader));
+
+            var firstLine = textReader.ReadLine() ?? throw new FormatException($"Expected the first line to contain a '{_columnSeparator}'-separated list of column headers");
             var headers = firstLine.Split(new[] { _columnSeparator }, StringSplitOptions.None).Select(text => text.Trim()).ToArray();
             var rowParser = GetRowparser(headers);
 
             while (true)
             {
-                var line = reader.ReadLine();
+                var line = textReader.ReadLine();
                 if (line == null) yield break;
 
                 var values = line.Split(new[] { _columnSeparator }, StringSplitOptions.None);

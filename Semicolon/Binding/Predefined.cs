@@ -2,23 +2,28 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace CsvParser.Binding
+namespace Semicolon.Binding
 {
-    public class Predefined
+    /// <summary>
+    /// Contains all the predefined binders
+    /// </summary>
+    class Predefined
     {
         static readonly Dictionary<Type, IBinder> Instances = new Dictionary<Type, IBinder>
         {
-            [typeof(string)] = new Predefined.StringBinder(),
-            [typeof(byte)] = new Predefined.ByteBinder(),
-            [typeof(short)] = new Predefined.ShortBinder(),
-            [typeof(int)] = new Predefined.IntBinder(),
-            [typeof(long)] = new Predefined.LongBinder(),
-            [typeof(float)] = new Predefined.FloatBinder(),
-            [typeof(double)] = new Predefined.DoubleBinder(),
-            [typeof(decimal)] = new Predefined.DecimalBinder(),
-            [typeof(DateTime)] = new Predefined.DateTimeBinder(),
-            [typeof(DateTimeOffset)] = new Predefined.DateTimeOffsetBinder(),
-            [typeof(TimeSpan)] = new Predefined.TimeSpanBinder(),
+            [typeof(string)] = new StringBinder(),
+            [typeof(byte)] = new ByteBinder(),
+            [typeof(short)] = new ShortBinder(),
+            [typeof(int)] = new IntBinder(),
+            [typeof(long)] = new LongBinder(),
+            [typeof(float)] = new FloatBinder(),
+            [typeof(double)] = new DoubleBinder(),
+            [typeof(decimal)] = new DecimalBinder(),
+            [typeof(DateTime)] = new DateTimeBinder(),
+            [typeof(DateTimeOffset)] = new DateTimeOffsetBinder(),
+            [typeof(TimeSpan)] = new TimeSpanBinder(),
+            [typeof(TimeZoneInfo)] = new TimeZoneInfoBinder(),
+            [typeof(CultureInfo)] = new CultureInfoBinder(),
         };
 
         public static IBinder GetBinderOrNull(Type type) => Instances.TryGetValue(type, out var result) ? result : null;
@@ -76,6 +81,16 @@ namespace CsvParser.Binding
         public class TimeSpanBinder : IBinder
         {
             public object GetValue(CultureInfo culture, string str) => TimeSpan.Parse(str, culture);
+        }
+
+        public class TimeZoneInfoBinder : IBinder
+        {
+            public object GetValue(CultureInfo culture, string str) => TimeZoneInfo.FindSystemTimeZoneById(str);
+        }
+
+        public class CultureInfoBinder : IBinder
+        {
+            public object GetValue(CultureInfo culture, string str) => new CultureInfo(str);
         }
     }
 }

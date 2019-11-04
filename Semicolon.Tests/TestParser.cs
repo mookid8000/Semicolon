@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using CsvParser.Attributes;
-using CsvParser.Binding;
 using NUnit.Framework;
+using Semicolon.Attributes;
+using Semicolon.Binding;
 using Testy;
 using Testy.Extensions;
 
-namespace CsvParser.Tests
+namespace Semicolon.Tests
 {
     [TestFixture]
     public class TestParser : FixtureBase
@@ -19,9 +19,9 @@ namespace CsvParser.Tests
             parser.ParseCsv(CsvText).DumpTable();
         }
 
-        const string CsvText = @"Id;Fornavn(e);Efternavn;Email;Dato;float;double;decimal;byte;short;int;long;En anden dato;Endnu en anden dato;Multi
-c0ffee;Mogens Heller;Grabe;mogens@rebus.fm;2019-10-31;1.2;1.2;1.2;23;30000;1000000000;83748437849378493;2019-11-01;2019-11-01;Hej
-bada55;Mogens Heller;Grabe;mookid8000@gmail.com;31-10-2019;1.2;1.2;1.2;23;30000;1000000000;83748437849378493;2019-11-01;2019-11-01;Hej";
+        const string CsvText = @"Id;Fornavn(e);Efternavn;Email;Dato;float;double;decimal;byte;short;int;long;En anden dato;Endnu en anden dato;Multi;Time zone;Culture
+c0ffee;Mogens Heller;Grabe;mogens@rebus.fm;2019-10-31;1.2;1.2;1.2;23;30000;1000000000;83748437849378493;2019-11-01;2019-11-01;Hej;Romance Standard Time;da-DK
+bada55;Mogens Heller;Grabe;mookid8000@gmail.com;31-10-2019;1.2;1.2;1.2;23;30000;1000000000;83748437849378493;2019-11-01;2019-11-01;Hej;Romance Standard Time;da-DK";
 
         class CsvRow
         {
@@ -66,6 +66,12 @@ bada55;Mogens Heller;Grabe;mookid8000@gmail.com;31-10-2019;1.2;1.2;1.2;23;30000;
 
             [CsvColumn("Multi")]
             public string SecondProperty { get; set; }
+
+            [CsvColumn("Culture")]
+            public CultureInfo CultureInfo { get; set; }
+
+            [CsvColumn("Time zone")]
+            public TimeZoneInfo TimeZoneInfo { get; set; }
         }
 
         /// <summary>

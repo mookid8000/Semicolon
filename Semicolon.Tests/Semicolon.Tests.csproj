@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvParser\CsvParser.csproj" />
+    <ProjectReference Include="..\Semicolon\Semicolon.csproj" />
   </ItemGroup>
 
 </Project>

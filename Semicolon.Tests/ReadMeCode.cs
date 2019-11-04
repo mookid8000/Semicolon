@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
-using CsvParser.Attributes;
-using CsvParser.Binding;
 using NUnit.Framework;
+using Semicolon.Attributes;
+using Semicolon.Binding;
 using Testy.Extensions;
 
-namespace CsvParser.Tests
+namespace Semicolon.Tests
 {
     [TestFixture]
     public class ReadMeCode

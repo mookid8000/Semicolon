@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{86F61BB3-5B25-4F1F-B8EC-0BF69563BD21}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Semicolon", "Semicolon\Semicolon.csproj", "{F68DB80B-E940-4C71-BB78-B16E2AD88529}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Semicolon.Tests", "Semicolon.Tests\Semicolon.Tests.csproj", "{4A7D69AC-A23C-4D54-934C-8312BE6EBFEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F68DB80B-E940-4C71-BB78-B16E2AD88529}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F68DB80B-E940-4C71-BB78-B16E2AD88529}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F68DB80B-E940-4C71-BB78-B16E2AD88529}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F68DB80B-E940-4C71-BB78-B16E2AD88529}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A7D69AC-A23C-4D54-934C-8312BE6EBFEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A7D69AC-A23C-4D54-934C-8312BE6EBFEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A7D69AC-A23C-4D54-934C-8312BE6EBFEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A7D69AC-A23C-4D54-934C-8312BE6EBFEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A0A25F3B-B765-4610-BF9D-506BD360FD42}
+	EndGlobalSection
+EndGlobal
