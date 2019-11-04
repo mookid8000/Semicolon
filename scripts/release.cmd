@@ -32,7 +32,7 @@ if %ERRORLEVEL% neq 0 (
  	goto exit_fail
 )
 
-dotnet pack "%1%" -c Release -o "%deploydir%" /p:PackageVersion=%version%
+dotnet pack "%1" -c Release -o "%deploydir%" /p:PackageVersion=%version%
 if %ERRORLEVEL% neq 0 (
 	popd
  	goto exit_fail

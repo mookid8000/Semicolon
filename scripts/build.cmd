@@ -27,7 +27,7 @@ if %ERRORLEVEL% neq 0 (
  	goto exit_fail
 )
 
-dotnet build "%1%" -c Release
+dotnet build "%1" -c Release
 if %ERRORLEVEL% neq 0 (
 	popd
  	goto exit_fail
