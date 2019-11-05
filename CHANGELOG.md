@@ -5,3 +5,6 @@
 
 ## 0.0.2
 * Factor options out into `Options` object and make separator configurable
+
+## 0.0.3
+* Better error

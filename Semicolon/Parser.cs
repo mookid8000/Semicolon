@@ -172,6 +172,14 @@ Please ensure that all CSV columns referenced from the row type can be resolved 
                             {
                                 _accessor[row, name] = objectValue;
                             }
+                            catch (ArgumentOutOfRangeException exception) when (exception.ParamName == "name")
+                            {
+                                throw new CsvParserException($@"Error when setting property {name} = {textValue}
+
+This is probably an indication that the property does not have a public setter.
+
+Bound properties must have a public setter, so Semicolon can set their values.", exception);
+                            }
                             catch (Exception exception)
                             {
                                 throw new CsvParserException($"Error when setting property {name} = {textValue}", exception);

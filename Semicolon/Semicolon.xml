@@ -66,12 +66,12 @@
         </member>
         <member name="M:Semicolon.Parser`1.#ctor">
             <summary>
-            Creates the CSV parser with <see cref="P:System.Globalization.CultureInfo.InvariantCulture"/> as the default culture.
+            Creates the parser with default options
             </summary>
         </member>
-        <member name="M:Semicolon.Parser`1.#ctor(System.Globalization.CultureInfo)">
+        <member name="M:Semicolon.Parser`1.#ctor(Semicolon.Options)">
             <summary>
-            Creates the CSV parser, using <paramref name="culture"/> as the culture, which gets passed to the binders when parsing values.
+            Creates the CSV parser using the given <paramref name="options"/>. If no options are given, <see cref="F:Semicolon.Options.Default"/> will be used
             </summary>
         </member>
         <member name="M:Semicolon.Parser`1.ParseCsv(System.String)">
