@@ -19,24 +19,20 @@ namespace Semicolon
     /// </summary>
     public class Parser<TRow>
     {
+        readonly Options _options;
         readonly TypeAccessor _accessor = TypeAccessor.Create(typeof(TRow));
-        readonly string _columnSeparator = ";";
-        readonly CultureInfo _defaultCulture;
 
         /// <summary>
-        /// Creates the CSV parser with <see cref="CultureInfo.InvariantCulture"/> as the default culture.
+        /// Creates the parser with default options
         /// </summary>
-        public Parser() : this(CultureInfo.InvariantCulture)
+        public Parser() : this(null)
         {
         }
 
         /// <summary>
-        /// Creates the CSV parser, using <paramref name="culture"/> as the culture, which gets passed to the binders when parsing values.
+        /// Creates the CSV parser using the given <paramref name="options"/>. If no options are given, <see cref="Options.Default"/> will be used
         /// </summary>
-        public Parser(CultureInfo culture)
-        {
-            _defaultCulture = culture ?? throw new ArgumentNullException(nameof(culture));
-        }
+        public Parser(Options options) => _options = options ?? Options.Default;
 
         /// <summary>
         /// Parses the given CSV string
@@ -61,8 +57,7 @@ namespace Semicolon
         {
             if (textReader == null) throw new ArgumentNullException(nameof(textReader));
 
-            var firstLine = textReader.ReadLine() ?? throw new FormatException($"Expected the first line to contain a '{_columnSeparator}'-separated list of column headers");
-            var headers = firstLine.Split(new[] { _columnSeparator }, StringSplitOptions.None).Select(text => text.Trim()).ToArray();
+            var headers = GetHeaders(textReader);
             var rowParser = GetRowparser(headers);
 
             while (true)
@@ -70,10 +65,27 @@ namespace Semicolon
                 var line = textReader.ReadLine();
                 if (line == null) yield break;
 
-                var values = line.Split(new[] { _columnSeparator }, StringSplitOptions.None);
+                var values = line.Split(new[] { _options.ColumnSeparator }, StringSplitOptions.None);
 
                 yield return rowParser(values);
             }
+        }
+
+        string[] GetHeaders(TextReader textReader)
+        {
+            var line = textReader.ReadLine()
+                       ?? throw new FormatException($"Expected the first line to contain a '{_options.ColumnSeparator}'-separated list of column headers");
+
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                throw new FormatException("The first line of the CSV text was empty. Please make the necessary trimming of the CSV text, before passing it to the parser");
+            }
+
+            var headers = line.Split(new[] { _options.ColumnSeparator }, StringSplitOptions.None)
+                .Select(text => text.Trim())
+                .ToArray();
+
+            return headers;
         }
 
         Func<string[], TRow> GetRowparser(string[] headers)
@@ -129,7 +141,7 @@ Please ensure that all CSV columns referenced from the row type can be resolved 
 
                             var binder = customBinderType != null
                                 ? GetCustomBinderInstance(customBinderType)
-                                : Predefined.GetBinderOrNull(member.Type) 
+                                : Predefined.GetBinderOrNull(member.Type)
                                   ?? throw new ArgumentException($"Sorry, don't know how to bind property {member.Name} of type {member.Type}");
 
                             return new { Member = member, Binder = GetValueGetter(binder, member) };
@@ -154,7 +166,7 @@ Please ensure that all CSV columns referenced from the row type can be resolved 
                             var member = getter.Member;
                             var binder = getter.Binder;
                             var name = member.Name;
-                            var objectValue = binder(textValue, _defaultCulture);
+                            var objectValue = binder(textValue, _options.CultureInfo);
 
                             try
                             {
