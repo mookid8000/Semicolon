@@ -32,7 +32,7 @@ namespace Semicolon
         /// <summary>
         /// Creates the CSV parser using the given <paramref name="options"/>. If no options are given, <see cref="Options.Default"/> will be used
         /// </summary>
-        public Parser(Options options) => _options = options ?? Options.Default;
+        public Parser(Options options) => _options = options ?? Options.Default();
 
         /// <summary>
         /// Parses the given CSV string
@@ -73,6 +73,8 @@ namespace Semicolon
 
         string[] GetHeaders(TextReader textReader)
         {
+            if (_options.Headers.Any()) return _options.Headers.ToArray();
+
             var line = textReader.ReadLine()
                        ?? throw new FormatException($"Expected the first line to contain a '{_options.ColumnSeparator}'-separated list of column headers");
 
