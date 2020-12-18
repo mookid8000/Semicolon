@@ -39,12 +39,12 @@ if %ERRORLEVEL% neq 0 (
 )
 
 call scripts\push.cmd "%version%"
+if %ERRORLEVEL% neq 0 (
+	popd
+ 	goto exit_fail
+)
 
 popd
-
-
-
-
 
 
 goto exit_success
