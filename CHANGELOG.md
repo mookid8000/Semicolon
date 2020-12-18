@@ -8,3 +8,7 @@
 
 ## 0.0.3
 * Better error
+
+## 0.0.4
+* Update some packages
+* Don't throw `IndexOutOfRangeException` when a row has more values than there were columns

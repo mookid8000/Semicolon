@@ -156,7 +156,9 @@ Please ensure that all CSV columns referenced from the row type can be resolved 
 
                 try
                 {
-                    for (var index = 0; index < values.Length; index++)
+                    var maxIndex = Math.Min(values.Length, getters.Length);
+
+                    for (var index = 0; index < maxIndex; index++)
                     {
                         var textValue = values[index];
                         var gettersForThisValue = getters[index];
