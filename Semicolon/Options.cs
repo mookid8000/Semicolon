@@ -25,5 +25,11 @@ namespace Semicolon
         /// When set, it is assumed that the CSV has no headers and the cells come in the order specifiec here
         /// </summary>
         public ICollection<string> Headers { get; } = new List<string>();
+
+        /// <summary>
+        /// When set, values are expected to be surrounded by pairs of these. Default is <code>null</code>,
+        /// which means that values are expected to not be delimited
+        /// </summary>
+        public char? ValueDelimiter { get; set; }
     }
 }

@@ -65,7 +65,7 @@ namespace Semicolon
                 var line = textReader.ReadLine();
                 if (line == null) yield break;
 
-                var values = line.Split(new[] { _options.ColumnSeparator }, StringSplitOptions.None);
+                var values = SplitLine(line);
 
                 yield return rowParser(values);
             }
@@ -83,11 +83,25 @@ namespace Semicolon
                 throw new FormatException("The first line of the CSV text was empty. Please make the necessary trimming of the CSV text, before passing it to the parser");
             }
 
-            var headers = line.Split(new[] { _options.ColumnSeparator }, StringSplitOptions.None)
+            var headers = SplitLine(line)
                 .Select(text => text.Trim())
                 .ToArray();
 
             return headers;
+        }
+
+        string[] SplitLine(string line)
+        {
+            var values = line.Split(new[] { _options.ColumnSeparator }, StringSplitOptions.None);
+
+            if (_options.ValueDelimiter != null)
+            {
+                return values
+                    .Select(value => value.TrimOne(_options.ValueDelimiter.Value))
+                    .ToArray();
+            }
+
+            return values;
         }
 
         Func<string[], TRow> GetRowparser(string[] headers)

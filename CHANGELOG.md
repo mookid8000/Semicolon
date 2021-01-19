@@ -15,3 +15,6 @@
 
 ## 0.0.5
 * Add ability to provider headers from the outside (useful in cases where the CSV does not have headers)
+
+## 0.0.6
+* Add ability to parse quoted CSV

@@ -57,6 +57,26 @@
             Creates the exception
             </summary>
         </member>
+        <member name="M:Semicolon.Options.Default">
+            <summary>
+            Gets the default options
+            </summary>
+        </member>
+        <member name="P:Semicolon.Options.ColumnSeparator">
+            <summary>
+            Configures which separator to expect between columns
+            </summary>
+        </member>
+        <member name="P:Semicolon.Options.CultureInfo">
+            <summary>
+            Configures which <see cref="P:Semicolon.Options.CultureInfo"/> to be used when automatically binding values that accept an <see cref="T:System.IFormatProvider"/>
+            </summary>
+        </member>
+        <member name="P:Semicolon.Options.Headers">
+            <summary>
+            When set, it is assumed that the CSV has no headers and the cells come in the order specifiec here
+            </summary>
+        </member>
         <member name="T:Semicolon.Parser`1">
             <summary>
             This is the main parser class. New this one up, passing as <typeparamref name="TRow"/>  the type you want to represent each row of data to extract.
@@ -71,7 +91,7 @@
         </member>
         <member name="M:Semicolon.Parser`1.#ctor(Semicolon.Options)">
             <summary>
-            Creates the CSV parser using the given <paramref name="options"/>. If no options are given, <see cref="F:Semicolon.Options.Default"/> will be used
+            Creates the CSV parser using the given <paramref name="options"/>. If no options are given, <see cref="M:Semicolon.Options.Default"/> will be used
             </summary>
         </member>
         <member name="M:Semicolon.Parser`1.ParseCsv(System.String)">
