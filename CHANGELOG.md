@@ -21,3 +21,6 @@
 
 ## 0.0.7
 * Update packages and stuff
+
+## 0.0.8
+* Add readme and other stuff to Nuggie
