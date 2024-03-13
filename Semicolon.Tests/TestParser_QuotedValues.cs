@@ -13,7 +13,23 @@ public class TestParser_QuotedValues
     [Test]
     public void QuotedValuesWithSeparatorsInThem()
     {
-            
+        const string csv = @"""Full Export Completed"";""Partial Result Timestamp"";""Filters""
+""YES"";"""";""Campaign: DK1; Campaign: DK2""";
+
+        var parser = new Parser<CampaignModel>(new() { ColumnSeparator = ';', ValueDelimiter = '"' });
+
+        var rows = parser.ParseCsv(csv);
+
+        rows.DumpTable();
+    }
+
+    class CampaignModel
+    {
+        [CsvColumn("Full Export Completed")]
+        public string FullExportCompleted { get; set; }
+
+        [CsvColumn("Filters")]
+        public string Filters { get; set; }
     }
 
     [Test]

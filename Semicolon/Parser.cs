@@ -239,22 +239,7 @@ to instance of {typeof(TRow)}", exception);
     {
         try
         {
-            var binder = (IBinder)TypeAccessor.Create(customBinderType).CreateNew();
-
-            return binder;
-            //return (value, culture) =>
-            //{
-            //    try
-            //    {
-            //        return binder.GetValue(culture, value);
-            //    }
-            //    catch (Exception exception)
-            //    {
-            //        throw new FormatException(
-            //            $"Could not bind value '{value}' using instance of custom binder {binder.GetType()}",
-            //            exception);
-            //    }
-            //};
+            return (IBinder)TypeAccessor.Create(customBinderType).CreateNew();
         }
         catch (Exception exception)
         {
