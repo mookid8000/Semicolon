@@ -92,14 +92,13 @@ public class Parser<TRow>
 
     string[] SplitLine(string line)
     {
-        var values = line.Split(new[] { _options.ColumnSeparator }, StringSplitOptions.None);
-
         if (_options.ValueDelimiter != null)
         {
-            return values
-                .Select(value => value.TrimOne(_options.ValueDelimiter.Value))
-                .ToArray();
+            // values are delimited! use splitter!
+            return line.SplitDelimited(_options.ColumnSeparator, _options.ValueDelimiter.Value);
         }
+
+        var values = line.Split([_options.ColumnSeparator], StringSplitOptions.None);
 
         return values;
     }

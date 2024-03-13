@@ -14,13 +14,22 @@ public class TestParser_QuotedValues
     public void QuotedValuesWithSeparatorsInThem()
     {
         const string csv = @"""Full Export Completed"";""Partial Result Timestamp"";""Filters""
-""YES"";"""";""Campaign: DK1; Campaign: DK2""";
+""YES"";"""";""Campaign: DK1; Campaign: DK2""
+""NO"";"""";""Campaign: DK1; Campaign: DK2; Campaign: DK3""
+";
 
         var parser = new Parser<CampaignModel>(new() { ColumnSeparator = ';', ValueDelimiter = '"' });
 
-        var rows = parser.ParseCsv(csv);
+        var rows = parser.ParseCsv(csv).ToList();
 
         rows.DumpTable();
+
+        Assert.That(rows.Count, Is.EqualTo(2));
+        Assert.That(rows.Select(r => new { r.FullExportCompleted, r.Filters }), Is.EqualTo(new[]
+        {
+            new { FullExportCompleted = "YES", Filters = "Campaign: DK1; Campaign: DK2" },
+            new { FullExportCompleted = "NO", Filters = "Campaign: DK1; Campaign: DK2; Campaign: DK3" },
+        }));
     }
 
     class CampaignModel
@@ -65,7 +74,7 @@ public class TestParser_QuotedValues
     {
         [CsvColumn("Date", Binder = typeof(Date.Binder))]
         public Date Date { get; set; }
-            
+
         [CsvColumn("PTE")]
         public int Period { get; set; }
 
