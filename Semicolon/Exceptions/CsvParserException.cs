@@ -1,24 +1,23 @@
 ﻿using System;
 
-namespace Semicolon.Exceptions
+namespace Semicolon.Exceptions;
+
+/// <summary>
+/// Exception thrown when CSV could not be parsed
+/// </summary>
+public class CsvParserException : Exception
 {
     /// <summary>
-    /// Exception thrown when CSV could not be parsed
+    /// Creates the exception
     /// </summary>
-    public class CsvParserException : Exception
+    public CsvParserException(string message) : base(message)
     {
-        /// <summary>
-        /// Creates the exception
-        /// </summary>
-        public CsvParserException(string message) : base(message)
-        {
-        }
+    }
 
-        /// <summary>
-        /// Creates the exception
-        /// </summary>
-        public CsvParserException(string message, Exception exception) : base(message, exception)
-        {
-        }
+    /// <summary>
+    /// Creates the exception
+    /// </summary>
+    public CsvParserException(string message, Exception exception) : base(message, exception)
+    {
     }
 }

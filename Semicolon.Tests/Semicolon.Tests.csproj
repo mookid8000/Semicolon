@@ -1,18 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="microsoft.net.test.sdk" Version="16.8.3" />
-    <PackageReference Include="nunit" Version="3.12.0" />
-    <PackageReference Include="nunit3testadapter" Version="3.17.0" />
-    <PackageReference Include="testy" Version="0.2.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="microsoft.net.test.sdk" Version="17.9.0" />
+		<PackageReference Include="nunit" Version="4.1.0" />
+		<PackageReference Include="testy" Version="0.9.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Semicolon\Semicolon.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Semicolon\Semicolon.csproj" />
+	</ItemGroup>
 
 </Project>

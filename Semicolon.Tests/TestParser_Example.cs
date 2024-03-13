@@ -7,57 +7,57 @@ using Semicolon.Binding;
 using Testy;
 using Testy.Extensions;
 
-namespace Semicolon.Tests
+namespace Semicolon.Tests;
+
+[TestFixture]
+public class TestParser_Example : FixtureBase
 {
-    [TestFixture]
-    public class TestParser_Example : FixtureBase
+    [Test]
+    [Description("This particular CSV example is characterized by having no (real) CSV headers")]
+    public void ChewThroughBmReportsStuff()
     {
-        [Test]
-        [Description("This particular CSV example is characterized by having no (real) CSV headers")]
-        public void ChewThroughBmReportsStuff()
-        {
-            var csv = string.Join(Environment.NewLine,
-                Csv.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
-                    .SkipWhile(line => line.StartsWith("HDR"))
-                    .TakeWhile(line => !line.StartsWith("FTR")));
+        var csv = string.Join(Environment.NewLine,
+            Csv.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)
+                .SkipWhile(line => line.StartsWith("HDR"))
+                .TakeWhile(line => !line.StartsWith("FTR")));
 
-            var options = new Options
+        var options = new Options
+        {
+            ColumnSeparator = ',',
+            Headers =
             {
-                ColumnSeparator = ',',
-                Headers =
-                {
-                    "Type",
-                    "Date",
-                    "TimeSlot"
-                }
-            };
-            var rows = new Parser<BmRow>(options).ParseCsv(csv).ToList();
+                "Type",
+                "Date",
+                "TimeSlot"
+            }
+        };
+        var rows = new Parser<BmRow>(options).ParseCsv(csv).ToList();
 
-            rows.DumpTable();
+        rows.DumpTable();
 
-            Assert.That(rows.Count, Is.EqualTo(18), "Expected 18 rows");
-            Assert.That(rows.All(r => r.Date == new DateTime(2020, 12, 18)), Is.True);
-            Assert.That(rows.Select(r => r.TimeSlot), Is.EqualTo(Enumerable.Range(1, 18)));
-        }
+        Assert.That(rows.Count, Is.EqualTo(18), "Expected 18 rows");
+        Assert.That(rows.All(r => r.Date == new DateTime(2020, 12, 18)), Is.True);
+        Assert.That(rows.Select(r => r.TimeSlot), Is.EqualTo(Enumerable.Range(1, 18)));
+    }
 
-        class PoorDateTimeBinder : IBinder
-        {
-            public object GetValue(CultureInfo culture, string str) => DateTime.ParseExact(str, "yyyyMMdd", CultureInfo.InvariantCulture);
-        }
+    class PoorDateTimeBinder : IBinder
+    {
+        public object GetValue(CultureInfo culture, string str) => DateTime.ParseExact(str, "yyyyMMdd", CultureInfo.InvariantCulture);
+    }
 
-        class BmRow
-        {
-            [CsvColumn("Type")]
-            public string LineType { get; set; }
+    class BmRow
+    {
+        [CsvColumn("Type")]
+        public string LineType { get; set; }
 
-            [CsvColumn("Date", Binder = typeof(PoorDateTimeBinder))]
-            public DateTime Date { get; set; }
+        [CsvColumn("Date", Binder = typeof(PoorDateTimeBinder))]
+        public DateTime Date { get; set; }
 
-            [CsvColumn("TimeSlot")]
-            public int TimeSlot { get; set; }
-        }
+        [CsvColumn("TimeSlot")]
+        public int TimeSlot { get; set; }
+    }
 
-        const string Csv = @"HDR,SYSTEM BUY SELL DATA
+    const string Csv = @"HDR,SYSTEM BUY SELL DATA
 SSB,20201218,1,14.20000,14.20000,F,N,NULL,-452.6853,0.00,0.00,14.20,0.000,647.560,-936.248,647.560,-935.615,-544.500,380.500,-544.132,380.500
 SSB,20201218,2,21.55000,21.55000,F,N,NULL,-69.2438,0.00,0.00,21.55,0.000,924.536,-829.801,924.536,-829.198,-544.500,380.500,-544.104,380.500
 SSB,20201218,3,24.17000,24.17000,F,N,NULL,-47.9730,0.00,0.00,24.17,0.000,814.427,-698.402,814.427,-697.840,-544.500,380.500,-544.062,380.500
@@ -77,5 +77,4 @@ SSB,20201218,16,56.24000,56.24000,F,P,0.00000,116.6665,0.00,0.00,,,663.242,-854.
 SSB,20201218,17,23.75000,23.75000,F,N,0.00000,-152.0601,0.00,0.00,,,428.775,-638.835,428.775,-637.835,-192.000,250.000,-192.000,250.000
 SSB,20201218,18,56.98000,56.98000,F,P,0.00000,95.9678,0.00,0.00,,,418.250,-380.282,418.250,-380.282,-192.000,250.000,-192.000,249.000
 FTR,18";
-    }
 }

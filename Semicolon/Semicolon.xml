@@ -77,6 +77,12 @@
             When set, it is assumed that the CSV has no headers and the cells come in the order specifiec here
             </summary>
         </member>
+        <member name="P:Semicolon.Options.ValueDelimiter">
+            <summary>
+            When set, values are expected to be surrounded by pairs of these. Default is <code>null</code>,
+            which means that values are expected to not be delimited
+            </summary>
+        </member>
         <member name="T:Semicolon.Parser`1">
             <summary>
             This is the main parser class. New this one up, passing as <typeparamref name="TRow"/>  the type you want to represent each row of data to extract.

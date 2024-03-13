@@ -18,3 +18,6 @@
 
 ## 0.0.6
 * Add ability to parse quoted CSV
+
+## 0.0.7
+* Update packages and stuff

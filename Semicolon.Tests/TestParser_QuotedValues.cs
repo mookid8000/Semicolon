@@ -5,16 +5,22 @@ using Semicolon.Attributes;
 using Semicolon.Binding;
 using Testy.Extensions;
 
-namespace Semicolon.Tests
+namespace Semicolon.Tests;
+
+[TestFixture]
+public class TestParser_QuotedValues
 {
-    [TestFixture]
-    public class TestParser_QuotedValues
+    [Test]
+    public void QuotedValuesWithSeparatorsInThem()
     {
-        [Test]
-        public void TennetExample()
-        {
-            const string csv =
-                @"""Date"",""PTE"",""period_from"",""period_until"",""upward_incident_reserve"",""downward_incident_reserve"",""To regulate up"",""To regulate down"",""Incentive component"",""Consume"",""Feed"",""Regulation state""
+            
+    }
+
+    [Test]
+    public void TennetExample()
+    {
+        const string csv =
+            @"""Date"",""PTE"",""period_from"",""period_until"",""upward_incident_reserve"",""downward_incident_reserve"",""To regulate up"",""To regulate down"",""Incentive component"",""Consume"",""Feed"",""Regulation state""
 ""01/17/2021"",""1"",""00:00"",""00:15"","""","""","""",""-60.77"",""0"",""-60.77"",""-60.77"",""-1""
 ""01/17/2021"",""2"",""00:15"",""00:30"","""","""","""","""",""0"",""44.78"",""44.78"",""0""
 ""01/17/2021"",""3"",""00:30"",""00:45"","""","""","""",""41.5"",""0"",""41.5"",""41.5"",""-1""
@@ -31,50 +37,49 @@ namespace Semicolon.Tests
 ""01/17/2021"",""14"",""03:15"",""03:30"","""","""",""48.79"","""",""0"",""48.79"",""48.79"",""1""
 ""01/17/2021"",""15"",""03:30"",""03:45"","""","""","""","""",""0"",""44.73"",""44.73"",""0""";
 
-            var options = new Options { ColumnSeparator = ',', ValueDelimiter = '"' };
-            var parser = new Parser<TennetRow>(options);
+        var options = new Options { ColumnSeparator = ',', ValueDelimiter = '"' };
+        var parser = new Parser<TennetRow>(options);
 
-            var rows = parser.ParseCsv(csv).ToList();
+        var rows = parser.ParseCsv(csv).ToList();
 
-            rows.DumpTable();
-        }
+        rows.DumpTable();
+    }
 
-        class TennetRow
-        {
-            [CsvColumn("Date", Binder = typeof(Date.Binder))]
-            public Date Date { get; set; }
+    class TennetRow
+    {
+        [CsvColumn("Date", Binder = typeof(Date.Binder))]
+        public Date Date { get; set; }
             
-            [CsvColumn("PTE")]
-            public int Period { get; set; }
+        [CsvColumn("PTE")]
+        public int Period { get; set; }
 
-            [CsvColumn("period_from")]
-            public string PeriodFrom { get; set; }
+        [CsvColumn("period_from")]
+        public string PeriodFrom { get; set; }
 
-            [CsvColumn("period_until")]
-            public string PeriodUntil { get; set; }
-        }
+        [CsvColumn("period_until")]
+        public string PeriodUntil { get; set; }
+    }
 
-        class Date
+    class Date
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Day { get; set; }
+
+        public override string ToString() => $"{Year:0000}-{Month:00}-{Day:00}";
+
+        public class Binder : IBinder
         {
-            public int Year { get; set; }
-            public int Month { get; set; }
-            public int Day { get; set; }
-
-            public override string ToString() => $"{Year:0000}-{Month:00}-{Day:00}";
-
-            public class Binder : IBinder
+            public object GetValue(CultureInfo culture, string str)
             {
-                public object GetValue(CultureInfo culture, string str)
-                {
-                    var parts = str.Split('/');
+                var parts = str.Split('/');
 
-                    return new Date
-                    {
-                        Day = int.Parse(parts[0]),
-                        Month = int.Parse(parts[1]),
-                        Year = int.Parse(parts[2]),
-                    };
-                }
+                return new Date
+                {
+                    Day = int.Parse(parts[0]),
+                    Month = int.Parse(parts[1]),
+                    Year = int.Parse(parts[2]),
+                };
             }
         }
     }
