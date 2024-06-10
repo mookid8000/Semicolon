@@ -23,9 +23,12 @@ static class StringExtensions
         {
             var builder = new StringBuilder();
             var isParsingValue = false;
+            var counter = -1;
 
             foreach (var c in str)
             {
+                counter++;
+
                 if (!isParsingValue && c == delimiter)
                 {
                     isParsingValue = true;
@@ -51,14 +54,25 @@ static class StringExtensions
                     continue;
                 }
 
-                throw new FormatException($"Cannot");
+                throw new FormatException($@"Could not split the line
+
+{str}
+{new string(' ', counter)}^
+
+into individual values, because value delimiters were not properly balanced.
+
+Here's an example on how lines were expected to be formatted, given the current configuration:
+
+{delimiter}value1{delimiter}{separator}{delimiter}value2{delimiter}{separator}{delimiter}value3{delimiter}
+
+(using '{separator}' as the separator and '{delimiter}' as the value delimiter)
+
+The error occurred at position {counter} in the line ('{c}') as indicated by the ^ above.");
             }
 
             yield return builder.ToString();
         }
 
         return MunchThroughIt().ToArray();
-
-        return str.Split(separator).Select(v => v.TrimOne(delimiter)).ToArray();
     }
 }

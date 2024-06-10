@@ -41,12 +41,11 @@ public class Parser<TRow>
     {
         if (csv == null) throw new ArgumentNullException(nameof(csv));
 
-        using (var reader = new StringReader(csv))
+        using var reader = new StringReader(csv);
+        
+        foreach (var row in ParseCsv(reader))
         {
-            foreach (var row in ParseCsv(reader))
-            {
-                yield return row;
-            }
+            yield return row;
         }
     }
 

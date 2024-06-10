@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using Semicolon.Attributes;
@@ -68,6 +69,60 @@ public class TestParser_QuotedValues
         var rows = parser.ParseCsv(csv).ToList();
 
         rows.DumpTable();
+    }
+
+    [Test]
+    public void AnotherExample()
+    {
+        const string csv =
+            @"""Full Export Completed"";""Partial Result Timestamp"";""Filters"";""Users"";""Date"";""Duration"";""Total ACW"";""Direction"";""Queue"";""Wrap-up"";""Last Wrap Up"";""Campaign Name"";""ANI"";""DNIS"";""outb Attempted""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:14.191"";"""";""outb"";""outyes"";""CODE-BUSY"";""CODE-BUSY"";""CNCPT1"";""tel:+4511223344"";""tel:+4588995566"";""1""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:26.739"";"""";""inb/outb"";""outyes"";""tlfsvarer; CODE-GOTO-FLOW"";""tlfsvarer"";""CNCPT1"";""tel:+4522554477"";""tel:+4566996699"";""1""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:20.204"";"""";""outb"";""outyes"";""CODE-NO-ANSWER"";""CODE-NO-ANSWER"";""CNCPT1"";""tel:+4522334455"";""tel:+4577887788"";""1""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:26.641"";"""";""inb/outb"";""outyes"";""tlfsvarer; CODE-GOTO-FLOW"";""tlfsvarer"";""CNCPT1"";""tel:+4500110011"";""tel:+4522335544"";""1""";
+
+        var options = new Options { ColumnSeparator = ';', ValueDelimiter = '"' };
+        var parser = new Parser<AnotherRow>(options);
+
+        var rows = parser.ParseCsv(csv).ToList();
+
+        rows.DumpTable();
+
+        Assert.That(rows.Count, Is.EqualTo(4));
+        Assert.That(rows.Select(r => r.Value), Is.EqualTo(new[]
+        {
+            "tel:+4588995566",
+            "tel:+4566996699",
+            "tel:+4577887788",
+            "tel:+4522335544",
+        }));
+    }
+
+    [Test]
+    public void VerifyNiceExceptionWhenAccidentallySwitchingConfigurationValues()
+    {
+        const string csv =
+            @"""Full Export Completed"";""Partial Result Timestamp"";""Filters"";""Users"";""Date"";""Duration"";""Total ACW"";""Direction"";""Queue"";""Wrap-up"";""Last Wrap Up"";""Campaign Name"";""ANI"";""DNIS"";""outb Attempted""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:14.191"";"""";""outb"";""outyes"";""CODE-BUSY"";""CODE-BUSY"";""CNCPT1"";""tel:+4511223344"";""tel:+4588995566"";""1""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:26.739"";"""";""inb/outb"";""outyes"";""tlfsvarer; CODE-GOTO-FLOW"";""tlfsvarer"";""CNCPT1"";""tel:+4522554477"";""tel:+4566996699"";""1""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:20.204"";"""";""outb"";""outyes"";""CODE-NO-ANSWER"";""CODE-NO-ANSWER"";""CNCPT1"";""tel:+4522334455"";""tel:+4577887788"";""1""
+""YES"";"""";""CMP1; CMP2; CMP3; CMP4; CMP5; CMP6"";"""";""6/4/24 10:01 AM"";"" 00:00:26.641"";"""";""inb/outb"";""outyes"";""tlfsvarer; CODE-GOTO-FLOW"";""tlfsvarer"";""CNCPT1"";""tel:+4500110011"";""tel:+4522335544"";""1""";
+
+        var options = new Options { ColumnSeparator = '"', ValueDelimiter = ';' };
+        var parser = new Parser<AnotherRow>(options);
+
+        var exception = Assert.Throws<FormatException>(() => _ = parser.ParseCsv(csv).ToList())!;
+
+        Console.WriteLine(exception);
+
+        Assert.That(exception.Message, Contains.Substring("The error occurred at position 1 in the line ('F')"));
+        Assert.That(exception.Message, Contains.Substring(@"""Full Export Completed"";""Partial Result Timestamp"";""Filters"";""Users"";""Date"";""Duration"";""Total ACW"";""Direction"";""Queue"";""Wrap-up"";""Last Wrap Up"";""Campaign Name"";""ANI"";""DNIS"";""outb Attempted"""));
+    }
+
+    class AnotherRow
+    {
+        [CsvColumn("DNIS")]
+        public string Value { get; set; }
     }
 
     class TennetRow
