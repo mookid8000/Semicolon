@@ -24,3 +24,10 @@
 
 ## 0.0.8
 * Add readme and other stuff to Nuggie
+
+## 0.0.9
+* New build from repo with real license file - thanks [skarum]
+
+---
+
+[skarum]: https://github.com/skarum
