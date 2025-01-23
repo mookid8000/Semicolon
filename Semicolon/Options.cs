@@ -4,12 +4,15 @@ using System.Globalization;
 
 namespace Semicolon;
 
+/// <summary>
+/// Represents options for Semicolon :)
+/// </summary>
 public class Options
 {
     /// <summary>
     /// Gets the default options
     /// </summary>
-    public static Options Default() => new Options();
+    public static Options Default() => new();
 
     /// <summary>
     /// Configures which separator to expect between columns
